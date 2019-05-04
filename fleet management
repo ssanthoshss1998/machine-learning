@@ -1,0 +1,47 @@
+Problem statement:
+A Fleet Management company is planning to provide safe & Efficient Driving training to the drivers. They also want to provide benefits to the drivers based on their performance. The Company wants to group their drivers into different segments based on the Speeding Behaviour and the Distance they drive per day. The Company wants you to build a Segentation/clustering Model which will group their drivers into groups.
+
+import pandas as pd
+from sklearn.cluster import KMeans
+import seaborn as sns
+import warnings; 
+warnings.simplefilter('ignore')
+df = pd.read_csv('C:\\Users\\uia94128\\Desktop\\MFoi\\Kmeans.csv')
+df.head()
+df.describe()
+sns.distplot(df['Distance_Feature'])
+sns.distplot(df['Speeding_Feature'])
+sns.jointplot("Distance_Feature", "Speeding_Feature", data=df)
+kmeans = KMeans(n_clusters=2)
+kmeans.fit(df.drop('Driver_ID',axis=1))
+kmeans.cluster_centers_
+label=kmeans.labels_
+df['label_2']=label
+set(df['label_2'])
+label=kmeans.labels_
+df['label_2']=label
+set(df['label_2'])
+kmeans = KMeans(n_clusters=4)
+kmeans.fit(df.drop(['Driver_ID','label_2'],axis=1))
+kmeans.cluster_centers_
+label_4=kmeans.labels_
+set(label_4)
+df['label_4']=label_4
+df.head()
+sns.lmplot('Distance_Feature', 'Speeding_Feature', data=df, fit_reg=False, hue="label_4") 
+sse={}
+for k in range(1, 20):
+    kmeans = KMeans(n_clusters=k).fit(df.drop(['Driver_ID','label_2','label_4'],axis=1))
+    sse[k] = kmeans.inertia_
+groups=list(sse.keys())
+error=list(sse.values())
+error_df=pd.DataFrame(list(zip(groups, error)),columns=['groups','error'])
+error_df.head()
+kmeans = KMeans(n_clusters=5)
+kmeans.fit(df.drop(['Driver_ID','label_2','label_4'],axis=1))
+df['label_5']=kmeans.labels_
+sns.lmplot('Distance_Feature', 'Speeding_Feature', data=df, fit_reg=False, hue="label_5") 
+kmeans = KMeans(n_clusters=6)
+kmeans.fit(df.drop(['Driver_ID','label_2','label_4','label_5'],axis=1))
+df['label_6']=kmeans.labels_
+sns.lmplot('Distance_Feature', 'Speeding_Feature', data=df, fit_reg=False, hue="label_6")
